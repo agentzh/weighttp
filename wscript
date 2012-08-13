@@ -34,10 +34,12 @@ def configure(conf):
 		'-std=gnu99', '-Wall', '-Wshadow', '-W', '-pedantic', '-g', '-g2', '-O2', '-Wmissing-declarations',
 		'-Wdeclaration-after-statement', '-Wno-pointer-sign', '-Wcast-align', '-Winline', '-Wsign-compare',
 		'-Wnested-externs', '-Wpointer-arith', '-Wbad-function-cast', '-Wmissing-prototypes',
-		'-fPIC', '-fno-strict-aliasing',
+		'-fPIC', '-fno-strict-aliasing', '-I/usr/local/include',
 	]
 
 	conf.check_tool('compiler_cc')
+
+        conf.env.LINKFLAGS = ['-L/usr/local/lib']
 
 	# check for libev
 	conf.check(lib='ev', uselib_store='ev', mandatory=True)
