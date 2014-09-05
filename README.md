@@ -22,26 +22,26 @@ Build
 =====
 
 ```shell
-make
+$ make
 ```
 
 Installation
 ============
 
 ```shell
-make install   # install into /usr/local/bin by default
+$ make install   # install into /usr/local/bin by default
 ```
 
 More tuning:
 
 ```shell
-make install PREFIX=/opt/weighttp
+$ make install PREFIX=/opt/weighttp
 ```
 
 And for packagers:
 
 ```shell
-make install PREFIX=/opt/weighttp DESTDIR=$DESTDIR
+$ make install PREFIX=/opt/weighttp DESTDIR=$DESTDIR
 ```
 
 [Back to TOC](#table-of-contents)
@@ -49,7 +49,9 @@ make install PREFIX=/opt/weighttp DESTDIR=$DESTDIR
 Usage
 =====
 
+```shell
 $ weighttp -h
+```
 
 [Back to TOC](#table-of-contents)
 
@@ -57,5 +59,6 @@ Dependencies
 ============
 
 * libev can be found in your distro's repository or at http://software.schmorp.de/pkg/libev.html
+
 [Back to TOC](#table-of-contents)
 
