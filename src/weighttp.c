@@ -75,7 +75,7 @@ static char *forge_request(char *url, char keep_alive, char **host, uint16_t *po
 	char *req;
 	uint32_t len;
 	uint8_t i;
-	uint8_t have_user_agent;
+	uint8_t have_user_agent, have_host;
 
 	*host = NULL;
 	*port = 0;
@@ -131,30 +131,40 @@ static char *forge_request(char *url, char keep_alive, char **host, uint16_t *po
 		url = "/";
 
 	// total request size
-	len = strlen("GET HTTP/1.1\r\nHost: :65536\r\nConnection: keep-alive\r\n\r\n") + 1;
-	len += strlen(*host);
+	len = strlen("GET HTTP/1.1\r\nConnection: keep-alive\r\n\r\n") + 1;
 	len += strlen(url);
 
 	have_user_agent = 0;
+	have_host = 0;
 	for (i = 0; i < headers_num; i++) {
 		len += strlen(headers[i]) + strlen("\r\n");
 		if (strncmp(headers[i], "User-Agent: ", sizeof("User-Agent: ")-1) == 0)
 			have_user_agent = 1;
+		if (strncasecmp(headers[i], "Host:", sizeof("Host:")-1) == 0)
+			have_host = 1;
 	}
 
 	if (!have_user_agent)
 		len += strlen("User-Agent: weighttp/" VERSION "\r\n");
 
+	if (!have_host) {
+		len += strlen("Host: :65536\r\n")-1;
+		len += strlen(*host);
+	}
+
 	req = W_MALLOC(char, len);
 
 	strcpy(req, "GET ");
 	strcat(req, url);
-	strcat(req, " HTTP/1.1\r\nHost: ");
-	strcat(req, *host);
-	if (*port != 80)
-		sprintf(req + strlen(req), ":%"PRIu16, *port);
+	strcat(req, " HTTP/1.1\r\n");
 
-	strcat(req, "\r\n");
+	if (!have_host) {
+		strcat(req, "Host: ");
+		strcat(req, *host);
+		if (*port != 80)
+			sprintf(req + strlen(req), ":%"PRIu16, *port);
+		strcat(req, "\r\n");
+	}
 
 	if (!have_user_agent)
 		sprintf(req + strlen(req), "User-Agent: weighttp/" VERSION "\r\n");
